@@ -1,4 +1,4 @@
-# Everglow App API
+# Node.js & Prisma API template
 
 A Node.js/Express API with authentication, built with TypeScript, Prisma ORM, and PostgreSQL.
 
@@ -10,6 +10,9 @@ A Node.js/Express API with authentication, built with TypeScript, Prisma ORM, an
 - 🐳 Docker & Docker Compose setup
 - ✅ Request validation with Zod
 - 🛡️ Error handling middleware
+- 🧹 Code linting with ESLint
+- 🎨 Code formatting with Prettier
+- 🚦 Continuous Integration with GitHub Actions
 
 ## Quick Start
 
@@ -60,6 +63,16 @@ A Node.js/Express API with authentication, built with TypeScript, Prisma ORM, an
 - `pnpm dev` - Start development server with hot reload
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint to check code quality
+- `pnpm lint:fix` - Auto-fix lint issues
+- `pnpm format` - Format code with Prettier
+- `pnpm format:check` - Check code formatting with Prettier
+
+## Code Quality & CI
+
+- **ESLint**: Ensures code quality and consistency. Run `pnpm lint` to check for issues.
+- **Prettier**: Enforces consistent code formatting. Run `pnpm format` to auto-format your code.
+- **GitHub Actions**: CI workflow runs lint, format check, and build on every push and pull request.
 
 ## Tech Stack
 

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const registerSchema = z.object({
   email: z.string().email(),
@@ -12,4 +12,4 @@ export const loginSchema = z.object({
 
 export const refreshSchema = z.object({
   refreshToken: z.string(),
-}); 
+});

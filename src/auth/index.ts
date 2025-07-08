@@ -8,10 +8,16 @@ export * from './auth.utils';
 export { register, login, refresh } from './auth.service';
 
 // Controller - explicit exports to avoid conflicts
-export { register as registerController, login as loginController, refresh as refreshController, currentUser, privateRoute } from './auth.controller';
+export {
+  register as registerController,
+  login as loginController,
+  refresh as refreshController,
+  currentUser,
+  privateRoute,
+} from './auth.controller';
 
 // Routes
 export * from './auth.routes';
 
 // Schemas
-export * from './auth.schema'; 
+export * from './auth.schema';

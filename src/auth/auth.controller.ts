@@ -1,14 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import * as authService from "./auth.service";
-import { UserPayload } from "./auth.types";
-
-declare global {
-  namespace Express {
-    interface Request {
-      currentUser?: UserPayload | null
-    }
-  }
-}
+import { Request, Response, NextFunction } from 'express';
+import * as authService from './auth.service';
 
 /**
  * @swagger
@@ -42,7 +33,11 @@ declare global {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export const register = async (req: Request, res: Response, next: NextFunction) => {
+export const register = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   const authResponse = await authService.register(req.body);
   res.status(201).json(authResponse);
 };
@@ -79,7 +74,11 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export const login = async (req: Request, res: Response, next: NextFunction) => {
+export const login = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   const authResponse = await authService.login(req.body);
   res.status(200).json(authResponse);
 };
@@ -109,7 +108,11 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export const currentUser = async (req: Request, res: Response, next: NextFunction) => {
+export const currentUser = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   // req.user should be set by auth middleware
   res.status(200).json({ user: req.currentUser });
 };
@@ -146,7 +149,11 @@ export const currentUser = async (req: Request, res: Response, next: NextFunctio
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export const refresh = async (req: Request, res: Response, next: NextFunction) => {
+export const refresh = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   const tokens = await authService.refresh(req.body);
   res.status(200).json(tokens);
 };
@@ -179,6 +186,13 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-export const privateRoute = async (req: Request, res: Response, next: NextFunction) => {
-  res.status(200).json({ message: "Access granted to private route", user: req.currentUser });
-}; 
+export const privateRoute = async (
+  req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  res.status(200).json({
+    message: 'Access granted to private route',
+    user: req.currentUser,
+  });
+};
