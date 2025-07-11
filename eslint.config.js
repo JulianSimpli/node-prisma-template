@@ -18,6 +18,7 @@ export default [
       globals: {
         Buffer: 'readonly',
         process: 'readonly',
+        console: 'readonly',
         // Jest globals
         describe: 'readonly',
         it: 'readonly',

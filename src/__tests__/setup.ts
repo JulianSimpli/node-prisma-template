@@ -1,11 +1,12 @@
 import { PrismaClient } from '@prisma/client';
+import { config } from '../config';
 
 // Use a real PrismaClient for integration tests
 const prisma = new PrismaClient({
   datasources: {
     db: {
       url:
-        process.env.DATABASE_URL ||
+        config.DATABASE_URL ||
         'postgres://postgres:postgres@localhost:5432/appdb',
     },
   },

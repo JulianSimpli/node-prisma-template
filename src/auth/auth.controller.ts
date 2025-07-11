@@ -1,16 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
+import { prisma } from '../prisma';
 
 /**
  * Authentication Controller Class
  * Handles all authentication-related HTTP requests
  */
-export class AuthController {
-  private authService: AuthService;
-
-  constructor() {
-    this.authService = new AuthService();
-  }
+class AuthController {
+  constructor(private authService: AuthService) {}
 
   /**
    * @swagger
@@ -92,40 +90,6 @@ export class AuthController {
 
   /**
    * @swagger
-   * /api/auth/current-user:
-   *   get:
-   *     summary: Get current user information
-   *     tags: [Authentication]
-   *     security:
-   *       - bearerAuth: []
-   *     responses:
-   *       200:
-   *         description: Current user information retrieved successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 user:
-   *                   $ref: '#/components/schemas/User'
-   *       401:
-   *         description: Unauthorized - invalid or missing token
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/Error'
-   */
-  public currentUser = async (
-    req: Request,
-    res: Response,
-    _next: NextFunction
-  ) => {
-    // req.user should be set by auth middleware
-    res.status(200).json({ user: req.currentUser });
-  };
-
-  /**
-   * @swagger
    * /api/auth/refresh:
    *   post:
    *     summary: Refresh access token
@@ -159,6 +123,40 @@ export class AuthController {
   public refresh = async (req: Request, res: Response, _next: NextFunction) => {
     const tokens = await this.authService.refresh(req.body);
     res.status(200).json(tokens);
+  };
+
+  /**
+   * @swagger
+   * /api/auth/current-user:
+   *   get:
+   *     summary: Get current user information
+   *     tags: [Authentication]
+   *     security:
+   *       - bearerAuth: []
+   *     responses:
+   *       200:
+   *         description: Current user information retrieved successfully
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 user:
+   *                   $ref: '#/components/schemas/User'
+   *       401:
+   *         description: Unauthorized - invalid or missing token
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/Error'
+   */
+  public currentUser = async (
+    req: Request,
+    res: Response,
+    _next: NextFunction
+  ) => {
+    // req.user should be set by auth middleware
+    res.status(200).json({ user: req.currentUser });
   };
 
   /**
@@ -201,5 +199,12 @@ export class AuthController {
   };
 }
 
+// Factory function to create dependencies
+function createAuthController(): AuthController {
+  const usersService = new UsersService(prisma);
+  const authService = new AuthService(usersService);
+  return new AuthController(authService);
+}
+
 // Export a singleton instance
-export const authController = new AuthController();
+export const authController = createAuthController();

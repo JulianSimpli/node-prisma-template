@@ -7,7 +7,7 @@ import { CreateUserData, UpdateUserData } from './users.schema';
 import { UserResponse } from './users.types';
 
 export class UsersService {
-  constructor(private prisma: PrismaClient = new PrismaClient()) {}
+  constructor(private prisma: PrismaClient) {}
 
   private mapUserToResponse(user: User): UserResponse {
     return {

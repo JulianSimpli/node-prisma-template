@@ -13,7 +13,7 @@ describe('UsersService Integration Tests', () => {
   let usersService: UsersService;
 
   beforeEach(() => {
-    usersService = new UsersService();
+    usersService = new UsersService(prisma);
   });
 
   describe('createUser', () => {

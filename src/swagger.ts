@@ -1,134 +1,134 @@
-import swaggerJsdoc from "swagger-jsdoc";
+import swaggerJsdoc from 'swagger-jsdoc';
 
 const options: swaggerJsdoc.Options = {
   definition: {
-    openapi: "3.0.0",
+    openapi: '3.0.0',
     info: {
-      title: "Everglow API",
-      version: "1.0.0",
-      description: "API documentation for Everglow application",
+      title: 'Node.js with Prisma API',
+      version: '1.0.0',
+      description: 'API documentation for Node.js with Prisma application',
       contact: {
-        name: "API Support",
-        email: "support@everglow.com"
-      }
+        name: 'API Support',
+        email: 'support@everglow.com',
+      },
     },
     servers: [
       {
-        url: "http://localhost:3000",
-        description: "Development server"
-      }
+        url: 'http://localhost:3000',
+        description: 'Development server',
+      },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT"
-        }
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
       },
       schemas: {
         User: {
-          type: "object",
+          type: 'object',
           properties: {
             id: {
-              type: "string",
-              format: "uuid",
-              description: "User unique identifier"
+              type: 'string',
+              format: 'uuid',
+              description: 'User unique identifier',
             },
             email: {
-              type: "string",
-              format: "email",
-              description: "User email address"
+              type: 'string',
+              format: 'email',
+              description: 'User email address',
             },
             createdAt: {
-              type: "string",
-              format: "date-time",
-              description: "User creation timestamp"
-            }
-          }
+              type: 'string',
+              format: 'date-time',
+              description: 'User creation timestamp',
+            },
+          },
         },
         RegisterRequest: {
-          type: "object",
-          required: ["email", "password"],
+          type: 'object',
+          required: ['email', 'password'],
           properties: {
             email: {
-              type: "string",
-              format: "email",
-              description: "User email address"
+              type: 'string',
+              format: 'email',
+              description: 'User email address',
             },
             password: {
-              type: "string",
+              type: 'string',
               minLength: 6,
-              description: "User password (minimum 6 characters)"
-            }
-          }
+              description: 'User password (minimum 6 characters)',
+            },
+          },
         },
         LoginRequest: {
-          type: "object",
-          required: ["email", "password"],
+          type: 'object',
+          required: ['email', 'password'],
           properties: {
             email: {
-              type: "string",
-              format: "email",
-              description: "User email address"
+              type: 'string',
+              format: 'email',
+              description: 'User email address',
             },
             password: {
-              type: "string",
-              description: "User password"
-            }
-          }
+              type: 'string',
+              description: 'User password',
+            },
+          },
         },
         AuthResponse: {
-          type: "object",
+          type: 'object',
           properties: {
             accessToken: {
-              type: "string",
-              description: "JWT access token"
+              type: 'string',
+              description: 'JWT access token',
             },
             refreshToken: {
-              type: "string",
-              description: "JWT refresh token"
+              type: 'string',
+              description: 'JWT refresh token',
             },
             user: {
-              $ref: "#/components/schemas/User"
-            }
-          }
+              $ref: '#/components/schemas/User',
+            },
+          },
         },
         RefreshRequest: {
-          type: "object",
-          required: ["refreshToken"],
+          type: 'object',
+          required: ['refreshToken'],
           properties: {
             refreshToken: {
-              type: "string",
-              description: "JWT refresh token"
-            }
-          }
+              type: 'string',
+              description: 'JWT refresh token',
+            },
+          },
         },
         Error: {
-          type: "object",
+          type: 'object',
           properties: {
             errors: {
-              type: "array",
+              type: 'array',
               items: {
-                type: "object",
+                type: 'object',
                 properties: {
                   message: {
-                    type: "string",
-                    description: "Error message"
+                    type: 'string',
+                    description: 'Error message',
                   },
                   field: {
-                    type: "string",
-                    description: "Field that caused the error (optional)"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+                    type: 'string',
+                    description: 'Field that caused the error (optional)',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
-  apis: ["./src/**/*.ts"] // Path to the API docs
+  apis: ['./src/**/*.ts'], // Path to the API docs
 };
 
-export const specs = swaggerJsdoc(options); 
+export const specs = swaggerJsdoc(options);

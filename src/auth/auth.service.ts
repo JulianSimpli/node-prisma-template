@@ -14,11 +14,7 @@ import {
 } from './auth.utils';
 
 export class AuthService {
-  private usersService: UsersService;
-
-  constructor(usersService: UsersService = new UsersService()) {
-    this.usersService = usersService;
-  }
+  constructor(private usersService: UsersService) {}
 
   private generateAuthTokens(userId: string): AuthTokens {
     return {
