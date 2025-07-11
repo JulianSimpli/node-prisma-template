@@ -2,16 +2,12 @@ import { PrismaClient, User } from '@prisma/client';
 
 import { BadRequestError } from '../common/errors/bad-request';
 import { NotFoundError } from '../common/errors/not-found';
-import { hashPassword } from '../auth/auth.utils';
+import { hashPassword, comparePassword } from '../auth/auth.utils';
 import { CreateUserData, UpdateUserData } from './users.schema';
 import { UserResponse } from './users.types';
 
 export class UsersService {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private prisma: PrismaClient = new PrismaClient()) {}
 
   private mapUserToResponse(user: User): UserResponse {
     return {
@@ -73,7 +69,7 @@ export class UsersService {
     userId: string,
     data: UpdateUserData
   ): Promise<UserResponse> {
-    // Validate user exists
+    // Check if user exists first
     await this.validateUserExists(userId);
 
     // Validate email uniqueness if email is being updated
@@ -81,16 +77,31 @@ export class UsersService {
       await this.validateEmailNotExists(data.email, userId);
     }
 
-    // Prepare update data
-    const updateData: { email?: string } = {};
-    if (data.email) updateData.email = data.email;
-
-    // Update user
+    // Update user directly - Prisma handles undefined values automatically
     const updatedUser = await this.prisma.user.update({
       where: { id: userId },
-      data: updateData,
+      data: {
+        ...(data.email && { email: data.email }),
+      },
     });
 
     return this.mapUserToResponse(updatedUser);
+  }
+
+  async validateCredentials(email: string, password: string): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
+      throw new BadRequestError('Credenciales inválidas');
+    }
+
+    const isValidPassword = comparePassword(password, user.password);
+    if (!isValidPassword) {
+      throw new BadRequestError('Credenciales inválidas');
+    }
+
+    return user;
   }
 }

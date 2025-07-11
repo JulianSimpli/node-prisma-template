@@ -1,6 +1,5 @@
-import { PrismaClient } from '@prisma/client';
-
 import { BadRequestError } from '../common/errors/bad-request';
+import { UsersService } from '../users/users.service';
 import {
   UserRegistrationData,
   UserLoginData,
@@ -9,91 +8,68 @@ import {
   AuthResponse,
 } from './auth.types';
 import {
-  hashPassword,
-  comparePassword,
   generateAccessToken,
   generateRefreshToken,
   verifyToken,
 } from './auth.utils';
 
-const prisma = new PrismaClient();
+export class AuthService {
+  private usersService: UsersService;
 
-// Token generation functions
-function generateAuthTokens(userId: string): AuthTokens {
-  return {
-    accessToken: generateAccessToken(userId),
-    refreshToken: generateRefreshToken(userId),
-  };
-}
-
-// User validation functions
-async function validateUserExists(email: string): Promise<void> {
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    throw new BadRequestError('Email already in use');
-  }
-}
-
-async function validateUserCredentials(email: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { email } });
-  if (!user) {
-    throw new BadRequestError('Invalid credentials');
+  constructor(usersService: UsersService = new UsersService()) {
+    this.usersService = usersService;
   }
 
-  const isValidPassword = comparePassword(password, user.password);
-  if (!isValidPassword) {
-    throw new BadRequestError('Invalid credentials');
+  private generateAuthTokens(userId: string): AuthTokens {
+    return {
+      accessToken: generateAccessToken(userId),
+      refreshToken: generateRefreshToken(userId),
+    };
   }
 
-  return user;
-}
-
-// Main service functions
-export async function register(
-  data: UserRegistrationData
-): Promise<AuthResponse> {
-  await validateUserExists(data.email);
-
-  const hashedPassword = hashPassword(data.password);
-  const user = await prisma.user.create({
-    data: {
+  async register(data: UserRegistrationData): Promise<AuthResponse> {
+    // Use UsersService for user creation - it handles validation
+    const user = await this.usersService.createUser({
       email: data.email,
-      password: hashedPassword,
-    },
-  });
+      password: data.password,
+    });
 
-  const tokens = generateAuthTokens(user.id);
+    const tokens = this.generateAuthTokens(user.id);
 
-  return {
-    ...tokens,
-    user: {
-      id: user.id,
-      email: user.email,
-    },
-  };
-}
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+      },
+    };
+  }
 
-export async function login(data: UserLoginData): Promise<AuthResponse> {
-  const user = await validateUserCredentials(data.email, data.password);
-  const tokens = generateAuthTokens(user.id);
+  async login(data: UserLoginData): Promise<AuthResponse> {
+    const user = await this.usersService.validateCredentials(
+      data.email,
+      data.password
+    );
+    const tokens = this.generateAuthTokens(user.id);
 
-  return {
-    ...tokens,
-    user: {
-      id: user.id,
-      email: user.email,
-    },
-  };
-}
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+      },
+    };
+  }
 
-export async function refresh(data: RefreshTokenData): Promise<AuthTokens> {
-  try {
-    const payload = verifyToken(data.refreshToken);
-    const accessToken = generateAccessToken(payload.id);
-    const refreshToken = generateRefreshToken(payload.id);
+  async refresh(data: RefreshTokenData): Promise<AuthTokens> {
+    try {
+      const payload = verifyToken(data.refreshToken);
+      const accessToken = generateAccessToken(payload.id);
+      const refreshToken = generateRefreshToken(payload.id);
 
-    return { accessToken, refreshToken };
-  } catch {
-    throw new BadRequestError('Invalid refresh token');
+      return { accessToken, refreshToken };
+    } catch {
+      throw new BadRequestError('Invalid refresh token');
+    }
   }
 }
