@@ -23,7 +23,7 @@ describe('Rate Limiting Tests', () => {
 
         // First 5 attempts should fail due to invalid credentials, but not rate limiting
         expect(response.status).toBe(400);
-        expect(response.body.errors[0].message).toBe('Credenciales inválidas');
+        expect(response.body.errors[0].message).toBe('Invalid credentials');
       }
 
       // 6th attempt should be rate limited

@@ -51,7 +51,7 @@ describe('UsersService Integration Tests', () => {
         BadRequestError
       );
       await expect(usersService.createUser(createUserData)).rejects.toThrow(
-        'El email ya está en uso'
+        'Email is already in use'
       );
 
       // Verify only one user exists in the database
@@ -111,7 +111,7 @@ describe('UsersService Integration Tests', () => {
         NotFoundError
       );
       await expect(usersService.getUserById(nonExistentId)).rejects.toThrow(
-        'Usuario no encontrado'
+        'User not found'
       );
     });
   });
@@ -180,7 +180,7 @@ describe('UsersService Integration Tests', () => {
       ).rejects.toThrow(NotFoundError);
       await expect(
         usersService.updateUser(nonExistentId, updateUserData)
-      ).rejects.toThrow('Usuario no encontrado');
+      ).rejects.toThrow('User not found');
     });
 
     it('should throw BadRequestError when new email already exists', async () => {
@@ -201,7 +201,7 @@ describe('UsersService Integration Tests', () => {
       ).rejects.toThrow(BadRequestError);
       await expect(
         usersService.updateUser(createdUser.id, updateUserData)
-      ).rejects.toThrow('El email ya está en uso');
+      ).rejects.toThrow('Email is already in use');
 
       // Verify the original user's email wasn't changed
       const userInDb = await prisma.user.findUnique({
@@ -255,7 +255,7 @@ describe('UsersService Integration Tests', () => {
         const result = createUserSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
         if (!result.success) {
-          expect(result.error.issues[0].message).toBe('Email inválido');
+          expect(result.error.issues[0].message).toBe('Invalid email');
         }
       });
 
@@ -269,7 +269,7 @@ describe('UsersService Integration Tests', () => {
         expect(result.success).toBe(false);
         if (!result.success) {
           expect(result.error.issues[0].message).toBe(
-            'La contraseña debe tener al menos 6 caracteres'
+            'Password must be at least 6 characters long'
           );
         }
       });
@@ -300,7 +300,7 @@ describe('UsersService Integration Tests', () => {
         const result = updateUserSchema.safeParse(invalidData);
         expect(result.success).toBe(false);
         if (!result.success) {
-          expect(result.error.issues[0].message).toBe('Email inválido');
+          expect(result.error.issues[0].message).toBe('Invalid email');
         }
       });
     });

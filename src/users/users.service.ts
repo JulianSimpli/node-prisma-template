@@ -23,7 +23,7 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new NotFoundError('Usuario no encontrado');
+      throw new NotFoundError('User not found');
     }
 
     return user;
@@ -38,7 +38,7 @@ export class UsersService {
     });
 
     if (existingUser && existingUser.id !== excludeUserId) {
-      throw new BadRequestError('El email ya está en uso');
+      throw new BadRequestError('Email is already in use');
     }
   }
 
@@ -94,12 +94,12 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new BadRequestError('Credenciales inválidas');
+      throw new BadRequestError('Invalid credentials');
     }
 
     const isValidPassword = comparePassword(password, user.password);
     if (!isValidPassword) {
-      throw new BadRequestError('Credenciales inválidas');
+      throw new BadRequestError('Invalid credentials');
     }
 
     return user;
